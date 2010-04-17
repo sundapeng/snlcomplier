@@ -1,0 +1,66 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: AI3 - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x804 /fo"Debug/AI3.res" /d "_DEBUG" "E:\MyFiles\Work\人工智能\AI3.rc"" 
+Creating temporary file "C:\DOCUME~1\LIUZHI~1\LOCALS~1\Temp\RSP16.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Debug/AI3.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"E:\MyFiles\Work\人工智能\AI3.cpp"
+"E:\MyFiles\Work\人工智能\AI3Doc.cpp"
+"E:\MyFiles\Work\人工智能\AI3View.cpp"
+"E:\MyFiles\Work\人工智能\Display.cpp"
+"E:\MyFiles\Work\人工智能\InitDialog.cpp"
+"E:\MyFiles\Work\人工智能\InputAdvDlg.cpp"
+"E:\MyFiles\Work\人工智能\Main.cpp"
+"E:\MyFiles\Work\人工智能\MainFrm.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\LIUZHI~1\LOCALS~1\Temp\RSP16.tmp" 
+Creating temporary file "C:\DOCUME~1\LIUZHI~1\LOCALS~1\Temp\RSP17.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Debug/AI3.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"E:\MyFiles\Work\人工智能\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\LIUZHI~1\LOCALS~1\Temp\RSP17.tmp" 
+Creating temporary file "C:\DOCUME~1\LIUZHI~1\LOCALS~1\Temp\RSP18.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/AI.pdb" /debug /machine:I386 /out:"Debug/AI.exe" /pdbtype:sept 
+".\Debug\AI3.obj"
+".\Debug\AI3Doc.obj"
+".\Debug\AI3View.obj"
+".\Debug\Display.obj"
+".\Debug\InitDialog.obj"
+".\Debug\InputAdvDlg.obj"
+".\Debug\Main.obj"
+".\Debug\MainFrm.obj"
+".\Debug\StdAfx.obj"
+".\Debug\AI3.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\LIUZHI~1\LOCALS~1\Temp\RSP18.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+AI3.cpp
+AI3Doc.cpp
+AI3View.cpp
+Display.cpp
+InitDialog.cpp
+InputAdvDlg.cpp
+Main.cpp
+MainFrm.cpp
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+AI.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
