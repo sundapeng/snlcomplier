@@ -4,12 +4,14 @@ import java.util.*;
 
 
 /******************************************/
-class SymbTable  /* 在语义分析时用到 */
+/* 符号表的数据结构 */
+class SymbTable  
 {
     String idName;
     AttributeIR  attrIR=new AttributeIR();
     SymbTable next=null;
 }
+/*内部属性结构*/
 class AttributeIR
 {
     TypeIR  idtype=new TypeIR();
@@ -38,7 +40,7 @@ class ParamTable
     SymbTable entry=new SymbTable();
     ParamTable next=null;
 }
-class TypeIR
+class TypeIR/*类型内部表示*/
 {
     int size;
     String kind;
@@ -144,13 +146,13 @@ TypeIR  boolptr = new TypeIR();
 public boolean Error=false;
 public boolean Error1=false;
 public String ytable=" ";
-public String yerror;
+public String yerror = "";
 public String serror;
 public TreeNode yuyiTree;
 
 public Semantic(String s)
 {
-    Recursion r=new Recursion(s);
+    Parse r=new Parse(s);
     Error1=r.Error;
     if (Error1)
         serror=r.serror;
@@ -189,7 +191,7 @@ void Analyze(TreeNode t)
         else if(p.nodekind.equals("ProcDecK") )  
             procDecPart(p);       
 	else
-	    AnalyzeError(t,"no this node kind in syntax tree!",null);
+	    AnalyzeError(t,"在语法分析树中未有此类节点!",null);
         p = p.sibling ;/*循环处理*/
      }
 	
@@ -204,7 +206,7 @@ void Analyze(TreeNode t)
 	
     /*输出语义错误*/
     if(Error)
-	AnalyzeError(null," Analyze Error ",null);
+	AnalyzeError(null,"存在语义错误",null);
 } 
 
 /****************************************************/
@@ -227,7 +229,7 @@ void TypeDecPart(TreeNode t)
 	
 	if (present)
 	{
-	    AnalyzeError(t," id repeat declaration ",t.name[0]); 
+	    AnalyzeError(t,"类型标识符重复声明 ",t.name[0]); 
 	    entry = null;
 	}
 	else 
@@ -258,7 +260,7 @@ TypeIR TYPEA(TreeNode t,String kind)
         typeptr= RecordTYPEA(t); 
     else
     { 
-        AnalyzeError(t,"bug: no this type in syntax tree ",null);
+        AnalyzeError(t,"在语法树中没有此类型 ",null);
         return null;
     }	
     return typeptr;
@@ -278,10 +280,10 @@ TypeIR NameTYPEA(TreeNode t)
     present= FindEntry(t.attr.type_name,Entry);
     /*检查类型标识符未声明错*/
     if (!present)
-	AnalyzeError(t," id use before declaration ",t.attr.type_name);
+	AnalyzeError(t,"类型标识符未声明 ",t.attr.type_name);
     /*检查非类型标识符错*/  
     else if (!(Entry.attrIR.kind.equals("typekind")))
-	AnalyzeError(t," id is not type id ",t.attr.type_name);
+	AnalyzeError(t,"为非类型标识符 ",t.attr.type_name);
     /*返回标识符的类型的内部表示*/
     else
     {  
@@ -314,7 +316,7 @@ TypeIR ArrayTYPEA(TreeNode t)
     int up=t.attr.arrayAttr.up;
     int low=t.attr.arrayAttr.low;
     if (up < low)
-	AnalyzeError(t," array up smaller than under ",null);
+	AnalyzeError(t,"数组下标越界 ",null);
     else  /*上下界计入数组类型内部表示中*/
     {       
         typeptr.array.low = low;
@@ -439,7 +441,7 @@ void varDecList(TreeNode t)
 	    /*登记该变量的属性及名字,并返回其类型内部指针*/
 	    present = Enter(t.name[i],Attrib,Entry);	
 	    if(present)
-	        AnalyzeError(t," id repeat  declaration ",t.name[0]);
+	        AnalyzeError(t,"变量重复声明 ",t.name[0]);
 	    else
 	        t.table[i] = Entry;
 	}
@@ -481,7 +483,7 @@ void procDecPart(TreeNode t)
 	*再处理函数声明的循环处理，否则无法保存noff和moff的值。      */
 	else if ( t.nodekind.equals("ProcDecK") )  {}
 	else
-	    AnalyzeError(t,"no this node kind in syntax tree!",null);
+	    AnalyzeError(t,"在语法树中没有此类节点!",null);
 				
 	if(t.nodekind.equals("ProcDecK"))
             break;
@@ -628,7 +630,7 @@ void StatementA(TreeNode t)
     else if (t.kind.equals("ReturnK")) 	
         ReturnSA(t);  
     else
-        AnalyzeError(t," bug:no this statement in syntax tree ",null);	
+        AnalyzeError(t,"在语法树中没有此语句 ",null);	
 }
 /****************************************************/
 /* 函数名  AssignSA				    */
@@ -660,7 +662,7 @@ void AssignSA(TreeNode t)
 	{   /*id不是变量*/
             if (!(entry.attrIR.kind.equals("varkind")))
 	    {				
-                AnalyzeError(t," left and right is not compatible in assign ",null);				                      Eptr = null;
+                AnalyzeError(t,"赋值左右两端类型不兼容 ",null);				                      Eptr = null;
 	    }
 	    else
             {
@@ -669,7 +671,7 @@ void AssignSA(TreeNode t)
             }
 	} 
 	else /*标识符无声明*/
-	    AnalyzeError(t,"is not declarations!",child1.name[0]);
+	    AnalyzeError(t,"标识符未声明",child1.name[0]);
 	}
 	else/*Var0[E]的情形*/
 	{	
@@ -686,7 +688,7 @@ void AssignSA(TreeNode t)
 		/*检查是不是赋值号两侧 类型等价*/
 		ptr = Expr(child2,null);
 		if (!Compat(ptr,Eptr)) 
-		    AnalyzeError(t,"ass_expression error!",child2.name[0]);
+		    AnalyzeError(t,"非期望标识符",child2.name[0]);
 	    }
 	    /*赋值语句中不能出现函数调用*/
 	}
@@ -745,7 +747,7 @@ TypeIR Expr(TreeNode t,String Ekind)
 		{   /*id不是变量*/
 		    if (!(entry.attrIR.kind.equals("varkind")))
 		    {
-			AnalyzeError(t," syntax bug: no this kind of exp ",t.name[0]);				                              Eptr = null;
+			AnalyzeError(t,"没有此类表达式 ",t.name[0]);				                              Eptr = null;
 		    }
 		    else
 		    {
@@ -755,7 +757,7 @@ TypeIR Expr(TreeNode t,String Ekind)
 		    }
 		} 
 		else /*标识符无声明*/
-		    AnalyzeError(t,"is not declarations!",t.name[0]);				
+		    AnalyzeError(t,"标识符未声明",t.name[0]);				
 	    }
 	    else/*Var = Var0[E]的情形*/
 	    {	
@@ -789,7 +791,7 @@ TypeIR Expr(TreeNode t,String Ekind)
 	            Ekind = "dir"; /*直接变量*/
 	    }
 	    else 
-		AnalyzeError(t,"operator is not compat!",null);
+		AnalyzeError(t,"操作数类型不兼容",null);
 	}
     }
     return Eptr;
@@ -821,7 +823,7 @@ TypeIR arrayVar(TreeNode t)
 	/*Var0不是变量*/
 	if (!(entry.attrIR.kind.equals("varkind")))
 	{
-	    AnalyzeError(t,"is not variable error!",t.name[0]);			
+	    AnalyzeError(t,"不是变量",t.name[0]);			
 	    Eptr = null;
 	}
 	/*Var0不是数组类型变量*/
@@ -829,7 +831,7 @@ TypeIR arrayVar(TreeNode t)
         {
 	    if(!(entry.attrIR.idtype.kind.equals("arrayTy")))
 	    {
-		AnalyzeError(t,"is not array variable error !",t.name[0]);
+		AnalyzeError(t,"不是数组类型变量",t.name[0]);
 		Eptr = null;
 	    }
 	    else
@@ -844,7 +846,7 @@ TypeIR arrayVar(TreeNode t)
 		present = Compat(Eptr0,Eptr1);
 		if(!present)
 		{
-		    AnalyzeError(t,"type is not matched with the array member error !",null);
+		    AnalyzeError(t,"类型不与数组下标类型相符",null);
 		    Eptr = null;
 		}
 		else
@@ -853,7 +855,7 @@ TypeIR arrayVar(TreeNode t)
         }
     }
     else/*标识符无声明*/
-	AnalyzeError(t,"is not declarations!",t.name[0]);
+	AnalyzeError(t,"标识符未声明",t.name[0]);
     return Eptr;
 }
 
@@ -884,13 +886,13 @@ TypeIR recordVar(TreeNode t)
 	    /*Var0不是变量*/
 	    if (!(entry.attrIR.kind.equals("varkind")))
 	    {
-		AnalyzeError(t,"is not variable error!",t.name[0]);				
+		AnalyzeError(t,"不是变量",t.name[0]);				
 		Eptr = null;
 	    }
 	    /*Var0不是记录类型变量*/
 	    else if(!(entry.attrIR.idtype.kind.equals("recordTy")))
 	    {
-		AnalyzeError(t,"is not record variable error!",t.name[0]);
+		AnalyzeError(t,"不是记录类型变量",t.name[0]);
 		Eptr = null;
 	    }
 	    else/*检查id是否是合法域名*/
@@ -909,7 +911,7 @@ TypeIR recordVar(TreeNode t)
 		if(currentP==null)
 		    if(!result)
 		    {
-		        AnalyzeError(t,"is not field type!",t.child[0].name[0]);    				                        Eptr = null;
+		        AnalyzeError(t,"不是记录变量中的域类型",t.child[0].name[0]);    				                        Eptr = null;
 		    }
 	            /*如果id是数组变量*/
 		    else if(t.child[0].child[0]!=null)
@@ -917,7 +919,7 @@ TypeIR recordVar(TreeNode t)
 	    }
 	}
 	else/*标识符无声明*/
-	    AnalyzeError(t,"is not declarations!",t.name[0]);
+	    AnalyzeError(t,"标识符未声明",t.name[0]);
 	return Eptr;
 }
 		
@@ -940,11 +942,11 @@ void CallSA(TreeNode t)
 
 	/*未查到表示函数无声明*/
 	if (!present)                     
-	    AnalyzeError(t,"function is not declarationed!",t.child[0].name[0]);  
+	    AnalyzeError(t,"函数未声明",t.child[0].name[0]);  
         else 
 	    /*id不是函数名*/
 	    if (!(entry.attrIR.kind.equals("prockind")))     
-		AnalyzeError(t,"is not function name!",t.child[0].name[0]);
+		AnalyzeError(t,"不是函数名",t.child[0].name[0]);
 	    else/*形实参匹配*/
 	    {
 		p = t.child[1];
@@ -956,16 +958,16 @@ void CallSA(TreeNode t)
 		    TypeIR Etp = Expr(p,Ekind);/*实参*/
 		    /*参数类别不匹配*/
 		    if ((paraEntry.attrIR.var.access.equals("indir"))&&(Ekind.equals("dir")))
-			AnalyzeError(t,"param kind is not match!",null);  
+			AnalyzeError(t,"参数类别不匹配",null);  
 			/*参数类型不匹配*/
                     else if((paraEntry.attrIR.idtype)!=Etp)
-			AnalyzeError(t,"param type is not match!",null);
+			AnalyzeError(t,"参数类型不匹配",null);
 		    p = p.sibling;
 		    paramP = paramP.next;
 		}
 		/*参数个数不匹配*/
 		if ((p!=null)||(paramP!=null))
-		    AnalyzeError(t,"param num is not match!",null); 
+		    AnalyzeError(t,"参数个数不匹配",null); 
 	    }
 }
 /****************************************************/
@@ -983,9 +985,9 @@ void ReadSA(TreeNode t)
     t.table[0] = Entry;
 
     if (!present)   /*检查标识符未声明错*/
-	AnalyzeError(t," id no declaration in read ",t.name[0]);
+	AnalyzeError(t,"标识符未声明 ",t.name[0]);
     else if (!(Entry.attrIR.kind.equals("varkind")))   /*检查非变量标识符错*/ 
-        AnalyzeError(t," not var id in read statement ", null);
+        AnalyzeError(t,"不是变量标识符 ", null);
 }
 /****************************************************/
 /* 函数名  WriteSA				    */
@@ -998,7 +1000,7 @@ void WriteSA(TreeNode t)
     if(Etp!=null)
 	/*如果表达式类型为bool类型，报错*/
 	if (Etp.kind.equals("boolTy"))
-		AnalyzeError(t,"exprssion type error!",null);
+		AnalyzeError(t,"表达式类型为bool类型",null);
 }
 /****************************************************/
 /* 函数名  IfSA					    */
@@ -1014,7 +1016,7 @@ void IfSA(TreeNode t)
     
     if (Etp!=null)   /*表达式没有错误*/
         if (!(Etp.kind.equals("boolTy")))   /*检查非布尔表达式错*/
-	    AnalyzeError(t," not bool expression in if statement ",null);
+	    AnalyzeError(t,"表达式不是bool类型 ",null);
 	else
 	{
 	    TreeNode p = t.child[1];
@@ -1046,7 +1048,7 @@ void  WhileSA(TreeNode t)
    
     if (Etp!=null)  /*表达式没有错*/	  
         if (!(Etp.kind.equals("boolTy")))   /*检查非布尔表达式错*/
-	    AnalyzeError(t," not bool expression in if statement ",null);
+	    AnalyzeError(t,"表达式不是bool类型 ",null);
     /*处理循环体*/
     else
     {
@@ -1067,7 +1069,7 @@ void  WhileSA(TreeNode t)
 void  ReturnSA(TreeNode t)
 {
     if (Level == 0)
-	AnalyzeError(t," return statement cannot in main program ",null);
+	AnalyzeError(t,"返回语句不应出现在主程序中 ",null);
 }
 
 /****************************************************/
@@ -1080,9 +1082,9 @@ void  ReturnSA(TreeNode t)
 void AnalyzeError(TreeNode t,String message,String s)
 {   
     if (t==null)
-        yerror=yerror+"\n>>> ERROR:"+"Analyze error "+":"+message+s+"\n"; 
+        yerror=yerror+">>> 语义错误 :"+"   "+":"+message+s+"\n"; 
     else
-        yerror=yerror+"\n>>> ERROR :"+"Analyze error at "+String.valueOf(t.lineno)+": "+message+s+"\n";  
+        yerror=yerror+">>> 语义错误 :"+"   发生在第 "+String.valueOf(t.lineno)+" 行" +": "+message+s+"\n";  
 
     /* 设置错误追踪标志Error为TRUE,防止错误进一步传递 */
     Error = true;
@@ -1159,7 +1161,7 @@ boolean Enter(String id,AttributeIR attribP,SymbTable entry)
 	    result = id.equals(curentry.idName);
 	    if(result)
 	    {
-		AnalyzeError(null," Enter , id repeat declaration ",null);
+		AnalyzeError(null,"登记 ,标识符重复 ",null);
 		present = true;
 	    }
 	    else
@@ -1264,7 +1266,7 @@ void Fcopy(FieldChain a,FieldChain b)
 
 /********************************************************/
 /* 函数名  PrintFieldChain				*/
-/* 功  能  打印纪录类型的域表				*/
+/* 功  能  打印记录类型的域表				*/
 /* 说  明						*/
 /********************************************************/
 void PrintFieldChain(FieldChain currentP)
@@ -1302,7 +1304,7 @@ void PrintOneLayer(int level)
 {
     SymbTable t = scope[level];
 
-    ytable=ytable+"\n--------------SymbTable in level "+String.valueOf(level)+"--------------------\n";
+    ytable=ytable+"\n--------------第 "+String.valueOf(level)+" 层符号表--------------------\n";
     while (t!=null)
     { 
                 /*输出标识符名字*/
@@ -1368,11 +1370,11 @@ void PrintSymbTable()
 /************************语 法 分 析*********************************/
 /********************************************************************/
 /********************************************************************/
-/* 类  名 Recursion	                                            */
+/* 类  名 Parse	                                            */
 /* 功  能 总程序的处理					            */
 /* 说  明 建立一个类，处理总程序                                    */
 /********************************************************************/
-class Recursion
+class Parse
 {       
 TokenType token=new TokenType();
 
@@ -1385,7 +1387,7 @@ boolean Error=false;
 String serror;
 TreeNode yufaTree;
 
-Recursion(String s)
+Parse(String s)
 {
     yufaTree=Program(s);
 }
