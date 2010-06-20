@@ -19,12 +19,14 @@ public class Scanner
 	int columnNumber = 0;       // 当前字符的列数
 	int lineno = 1;				//源代码行号
 	boolean is = true;			//读入的字符是否为小写字母，TRUE为小写，false为大写
-	boolean Error = false;		//错误追踪标志 
+	public boolean Error = false;		//错误追踪标志 
 	boolean EOF_flag = false;	//EOF_flag当为文件尾时,改变函数ungetNextChar功能
 	
 	
 	public LinkedList<Token> errorTokenList = new LinkedList<Token>();   //错误链表由java库中的LinkedList类实现
 	public String tokenlist = null;   //保存token序列
+	public String tokenlist17 = "";  //保存错误的token序列
+	
 	
 	/*构造函数*/
 	public Scanner(String s)
@@ -205,13 +207,18 @@ String printTokenlist(ChainNode n)
 	return a;
 }
 
-//添加错误的token序列
+/*//添加错误的token序列
 public void addErrorList(Token new_token)
 {
 	errorTokenList.add(new_token);
+}*/
+
+//输出错误token序列
+public String printErrorList()
+{
+	String tokenlist18 = "错误的Token序列为:"+"\n"+tokenlist17;
+	return tokenlist18;
 }
-
-
 
 
 
@@ -498,8 +505,8 @@ ChainNode getTokenlist(String s)
 	token_num++;								    //Token总数目加1
 	if(currentToken.getLex().equals("ERROR"))
 	{
-		addErrorList(currentToken);
-	
+		
+		tokenlist17 = tokenlist17 + "第"+currentToken.getLineshow()+ "行: 存在词法错误."+"\n";
 		
 	}
 	copyString(preNode,currentToken);			//将已处理完的当前Token存入链表的Token部分
