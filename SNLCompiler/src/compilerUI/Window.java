@@ -176,6 +176,9 @@ public class Window extends ApplicationWindow {
 		toolBarManager.add(new ItalicAction());
 		toolBarManager.add(new UnderlineAction());
 		toolBarManager.add(new ScannerAction());
+		toolBarManager.add(new ParseAction());
+		toolBarManager.add(new SemanticAction());
+		toolBarManager.add(new MidCodeAction());
 		return toolBarManager;
 	}
 
@@ -229,7 +232,7 @@ public class Window extends ApplicationWindow {
 			try {
 				// ‘ÿ»ÎÕºœÒ
 				ImageDescriptor icon = ImageDescriptor.createFromURL(new URL(
-						"file:icons/run.gif"));
+						"file:icons/incom_stat(1).gif"));
 				setImageDescriptor(icon);
 			} catch (MalformedURLException e) {
 				System.err.println(e.getMessage());
@@ -239,12 +242,20 @@ public class Window extends ApplicationWindow {
 		public void run() {
 			String s = text.getText();
 			Scanner scan = new Scanner(s);
+			if(scan.Error)
+			{
+				
+				text1.setText(scan.printErrorList());
+			}
+			else
+			{
 			s = scan.tokenlist;
 			s = s.trim();
 			int len = s.length();
 			len = len - 11;
 			String p = s.substring(0,len);
 			text1.setText(p);
+			}
 		}
 	}
 
@@ -288,7 +299,7 @@ public class Window extends ApplicationWindow {
 			try {
 				// ‘ÿ»ÎÕºœÒ
 				ImageDescriptor icon = ImageDescriptor.createFromURL(new URL(
-						"file:icons/run.gif"));
+						"file:icons/filter_ps(3).gif"));
 				setImageDescriptor(icon);
 			} catch (MalformedURLException e) {
 				System.err.println(e.getMessage());
@@ -323,7 +334,7 @@ public class Window extends ApplicationWindow {
 			try {
 				// ‘ÿ»ÎÕºœÒ
 				ImageDescriptor icon = ImageDescriptor.createFromURL(new URL(
-						"file:icons/run.gif"));
+						"file:icons/goto_obj(1).gif"));
 				setImageDescriptor(icon);
 			} catch (MalformedURLException e) {
 				System.err.println(e.getMessage());

@@ -902,7 +902,7 @@ TreeNode yuyiTree;
 
 AnalYuyi(String s)
 {
-    Recursion r=new Recursion(s);
+    Parse r=new Parse(s);
     Error1=r.Error;
     if (Error1)
         serror=r.serror;
@@ -2018,11 +2018,11 @@ void Fcopy(FieldChain a,FieldChain b)
 /************************语 法 分 析*********************************/
 /********************************************************************/
 /********************************************************************/
-/* 类  名 Recursion	                                            */
+/* 类  名 Parse	                                            */
 /* 功  能 总程序的处理					            */
 /* 说  明 建立一个类，处理总程序                                    */
 /********************************************************************/
-class Recursion
+class Parse
 {       
 TokenType token=new TokenType();
 
@@ -2035,7 +2035,7 @@ boolean Error=false;
 String serror;
 TreeNode yufaTree;
 
-Recursion(String s)
+Parse(String s)
 {
     yufaTree=Program(s);
 }

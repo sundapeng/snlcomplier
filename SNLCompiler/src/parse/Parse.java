@@ -24,7 +24,7 @@ StringTokenizer fenxi;
 
 public boolean Error=false;
 public String stree;
-public String serror;
+public String serror = "";
 public TreeNode yufaTree;
 
 final Display display = Display.getDefault();
@@ -48,7 +48,7 @@ public Parse(String s)
 public void printTreeEgg(String s)
 {
 	shell.setSize(500, 375);
-	shell.setText("Tree实例");
+	shell.setText("语法Tree");
 	shell.setLayout(new FillLayout());
 	// 定义一个树对象
 	treeg = new Tree(shell, SWT.SINGLE);
@@ -76,16 +76,16 @@ TreeNode Program(String ss)
 	if (t!=null) 
             root.child[0] = t;
 	else 
-            syntaxError("a program head is expected!");
+            syntaxError("缺少程序头！");
 	if (q!=null) 
             root.child[1] = q;
 	if (s!=null) 
             root.child[2] = s;
-	else syntaxError("a program body is expected!");
+	else syntaxError("缺少程序体！");
 
 	match("DOT");
         if (!(token.getLex().equals("ENDFILE")))
-	    syntaxError("Code ends before file\n");
+	    syntaxError("代码未执行完\n");
 
         if (Error==true)
             return null;
@@ -173,7 +173,7 @@ TreeNode TypeDeclaration()
     match("TYPE");
     TreeNode t = TypeDecList();
     if (t==null)
-        syntaxError("a type declaration is expected!");
+        syntaxError("缺少类型声明");
     return t;
 }
 
@@ -340,7 +340,7 @@ void RecType(TreeNode t)
     if (p!=null)
         t.child[0] = p;
     else
-        syntaxError("a record body is requested!");         
+        syntaxError("缺少记录类型体");         
     match("END");
 }
 
@@ -374,7 +374,7 @@ TreeNode  FieldDecList()
              else
              {
 		    ReadNextToken();
-		    syntaxError("type name is expected");
+		    syntaxError("缺少类型名");
              }
         t.sibling = p;
     }	    
@@ -460,7 +460,7 @@ TreeNode VarDeclaration()
     match("VAR");
     TreeNode t = VarDecList();
     if (t==null)
-	syntaxError("a var declaration is expected!");
+	syntaxError("缺少变量声明");
     return t;
 }
 
@@ -519,7 +519,7 @@ void VarIdList(TreeNode t)
     }
     else 
     {
-	syntaxError("a varid is expected here!");
+	syntaxError("缺少标识符");
 	ReadNextToken();
     }
     VarIdMore(t);
@@ -657,7 +657,7 @@ TreeNode ParamMore()
         match("SEMI");
         t = ParamDecList();
 	if (t==null)
-           syntaxError("a param declaration is request!");
+           syntaxError("缺少参数声明");
     }
     else if (token.getLex().equals("RPAREN"))  {} 
 	 else
@@ -753,7 +753,7 @@ TreeNode ProcBody()
 {
     TreeNode t = ProgramBody();
     if (t==null)
-	syntaxError("a program body is requested!");
+	syntaxError("缺少函数体");
     return t;
 }
 
@@ -1259,7 +1259,7 @@ void match(String expected)
 	  ReadNextToken();
       else 
       {
-	  syntaxError("not match error ");
+	  syntaxError("终极符不匹配!");
 	  ReadNextToken();
       }     
 }
@@ -1272,7 +1272,7 @@ void match(String expected)
 /********************************************************************/
 void syntaxError(String s)     
 {
-    serror=serror+"\n>>> ERROR :"+"Syntax error at "+String.valueOf(token.getLineshow())+": "+s; 
+    serror=serror+">>> ERROR :"+"错误发生在第 "+String.valueOf(token.getLineshow())+" 行"+": "+s+"\n"; 
 
     /* 设置错误追踪标志Error为TRUE,防止错误进一步传递 */
     Error = true;
