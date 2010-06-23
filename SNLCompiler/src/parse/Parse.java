@@ -1232,7 +1232,7 @@ TreeNode FieldVar()
 /********************************************************************/
 void FieldVarMore(TreeNode t)
 {
-    if ((token.getLex().equals("ASSIGN"))||(token.getLex().equals("TIMES"))||               (token.getLex().equals("EQ"))||(token.getLex().equals("LT"))||                          (token.getLex().equals("PLUS"))||(token.getLex().equals("MINUS"))||                      (token.getLex().equals("OVER"))||(token.getLex().equals("RPAREN"))||               (token.getLex().equals("SEMI"))||(token.getLex().equals("COMMA"))||               (token.getLex().equals("THEN"))||(token.getLex().equals("ELSE"))||               (token.getLex().equals("FI"))||(token.getLex().equals("DO"))||
+    if ((token.getLex().equals("ASSIGN"))||(token.getLex().equals("TIMES"))||(token.getLex().equals("EQ"))||(token.getLex().equals("LT"))||                          (token.getLex().equals("PLUS"))||(token.getLex().equals("MINUS"))||                      (token.getLex().equals("OVER"))||(token.getLex().equals("RPAREN"))||               (token.getLex().equals("SEMI"))||(token.getLex().equals("COMMA"))||               (token.getLex().equals("THEN"))||(token.getLex().equals("ELSE"))||               (token.getLex().equals("FI"))||(token.getLex().equals("DO"))||
        (token.getLex().equals("ENDWH"))||(token.getLex().equals("END")))
        {}
     else if (token.getLex().equals("LMIDPAREN"))

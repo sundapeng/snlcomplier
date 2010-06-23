@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="D:/eclipse/plugins/org.eclipse.ui.workbench_3.4.2.M20090127-1700.jar" sourcepath="D:/eclipse/plugins/org.eclipse.ui.workbench_3.4.2.M20090127-1700.jar"/>
 	<classpathentry kind="lib" path="D:/eclipse/plugins/com.ibm.icu_3.8.1.v20080530.jar" sourcepath="D:/eclipse/plugins/com.ibm.icu_3.8.1.v20080530.jar"/>
 	<classpathentry kind="lib" path="D:/eclipse/plugins/org.eclipse.ui.forms_3.3.103.v20081027_34x.jar" sourcepath="D:/eclipse/plugins/org.eclipse.ui.forms_3.3.103.v20081027_34x.jar"/>
+	<classpathentry kind="var" path="JUNIT" sourcepath="/JUNIT_SRC"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

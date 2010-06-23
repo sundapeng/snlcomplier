@@ -19,7 +19,7 @@ class CodeR
 class ArgRecord  
 {  
     String form;
-    MidAttr midAttr=new MidAttr();  /*变量的ARG结构需要纪录的信息*/
+    MidAttr midAttr=new MidAttr();  /*变量的ARG结构需要记录的信息*/
 }  
 class MidAttr		
 {  
