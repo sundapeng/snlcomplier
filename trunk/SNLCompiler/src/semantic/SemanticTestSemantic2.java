@@ -13,7 +13,7 @@ public class SemanticTestSemantic2 extends TestCase {
 	}
 
 	public void testSemantic() {
-		String s="program bubble {程序头 程序名标识符} " +
+		String  s="program bubble {程序头 程序名标识符} " +
 		"　　var integer i,j,num; 　" +
 		"　array[1..20] of integer a; 　" +
 		"　procedure q(integer num); 　" +
